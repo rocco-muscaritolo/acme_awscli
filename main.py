@@ -2,11 +2,7 @@
 Wrapper for AWS CLI command. 
 If needed, will prompt for a new MFA OTP tokencode and update AWS credentials for profile.
 """
-
-import logging.config
-import logging.handlers
-import json
-import pathlib
+import logging
 import os
 import subprocess
 import sys
@@ -15,26 +11,15 @@ import boto3
 import botocore.session
 import botocore.exceptions
 
+import mylogger
 
-logger = logging.getLogger("acme_awscli")
-
-
-def setup_logging():
-    """
-    Configure root logger
-    """
-
-    config_file = pathlib.Path("logging_configs/config.json")
-    with open(config_file, encoding="utf-8") as f:
-        config = json.load(f)
-    logging.config.dictConfig(config)
+logger = logging.getLogger(__name__)
 
 
 def valid_mfa_session_token(aws_profile):
     """
     Checks AWS profile for a valid session token
     """
-
     try:
         session = boto3.session.Session(profile_name=aws_profile)
         client = session.client("sts")
@@ -48,8 +33,7 @@ def set_mfa_credentials():
     """
     Updates AWS profile configuration with new STS session token
     """
-
-    logger.warning("AWS STS session token has expired or is not valid)")
+    logger.info("AWS STS session token has expired or is not valid")
     session = botocore.session.Session()
     mfa_serial = session.get_scoped_config()["mfa_serial"]
     sts = boto3.client("sts")
@@ -91,7 +75,6 @@ def main(aws_cli_args):
     Prompts for MFA token code if invalid MFA session token and
     runs a shell command with AWS CLI arguments
     """
-
     # TODO: argparser for AWS profile name
     aws_profile = "mfa"
 
@@ -106,5 +89,6 @@ def main(aws_cli_args):
 
 
 if __name__ == "__main__":
-    setup_logging()
+    mylogger.setup_logging()
+    logger.error("testing")
     main(sys.argv[1:])
