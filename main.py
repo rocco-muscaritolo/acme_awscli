@@ -52,23 +52,6 @@ def set_mfa_credentials():
             ["aws", "--profile", "mfa", "configure", "set", variable, value], check=True
         )
 
-    # # Set ENV variables for AWS session
-    # os.environ["AWS_ACCESS_KEY_ID"] = response["Credentials"]["AccessKeyId"]
-    # os.environ["AWS_SECRET_ACCESS_KEY"] = response["Credentials"]["SecretAccessKey"]
-    # os.environ["AWS_SESSION_TOKEN"] = response["Credentials"]["SessionToken"]
-
-    # for variable in os.environ.copy():
-    #     if variable in [
-    #         "AWS_ACCESS_KEY_ID",
-    #         "AWS_SECRET_ACCESS_KEY",
-    #         "AWS_SESSION_TOKEN",
-    #     ]:
-    #         value = os.environ[variable]
-    #         subprocess.run(
-    #             ["aws", "--profile", "mfa", "configure", "set", variable, value],
-    #             check=True,
-    #         )
-
 
 def main(aws_cli_args):
     """
@@ -90,5 +73,4 @@ def main(aws_cli_args):
 
 if __name__ == "__main__":
     mylogger.setup_logging()
-    logger.error("testing")
     main(sys.argv[1:])
